@@ -10,7 +10,7 @@ BD010000 = Bandung
 BOO10000 = Bogor
 ```
 
-JNE provide table Excel yang harus kita olah terlebih dahulu, file xls ada di folder public. table itu harus kita import ke table `SQL`, maka dari itu project ini dibuat.
+JNE provide table Excel yang harus kita olah terlebih dahulu, file xls ada di folder public. table itu harus kita import ke table `SQL`, maka dari itu project ini dibuat. file `SQL` tidak di sertakan di repository ini, silahkan jalankan sendiri. sembari baca2 kodingan okay :)
 
 ## Prof of Concept
 
