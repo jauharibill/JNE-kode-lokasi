@@ -6,6 +6,7 @@ use App\Enums\ColumnJNEEnums;
 use App\Models\City;
 use App\Models\Province;
 use App\Models\SubDistrict;
+use Cassandra\Column;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class SubDistrictImport implements ToModel
@@ -17,7 +18,11 @@ class SubDistrictImport implements ToModel
     */
     public function model(array $row)
     {
-        $city = $this->getCityId($row[ColumnJNEEnums::KOTA], $row[ColumnJNEEnums::PROVINSI]);
+        $city = $this->getCityId(
+            $row[ColumnJNEEnums::KOTA],
+            $row[ColumnJNEEnums::PROVINSI],
+            $row[ColumnJNEEnums::ADMINISTRATIVE]
+        );
 
         if (!$this->isDistrictExists($row[ColumnJNEEnums::KECAMATAN], $city->id ?? 0) && $city) {
             return new SubDistrict([
@@ -36,12 +41,13 @@ class SubDistrictImport implements ToModel
      * @param $province_code
      * @return mixed
      */
-    private function getCityId($city_name, $province_name)
+    private function getCityId($city_name, $province_name, $administrative)
     {
         $province = Province::where('name', $province_name)->first();
 
         return City::where('administrative', '!=', '-')
             ->where([
+                'administrative' => $administrative,
                 'name' => $city_name,
                 'jne_province_id' => $province->id
             ])->first();
