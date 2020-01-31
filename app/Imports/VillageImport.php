@@ -29,7 +29,8 @@ class VillageImport implements ToModel
         $city = City::where('administrative', '!=', '-')
             ->where([
                 'name' => $row[ColumnJNEEnums::KOTA],
-                'jne_province_id' => $province->id
+                'jne_province_id' => $province->id,
+                'administrative' => $row[ColumnJNEEnums::ADMINISTRATIVE]
             ])->first();
 
         if ($city) {
@@ -41,11 +42,18 @@ class VillageImport implements ToModel
                 'jne_city_id' => $city->id
             ])->first();
 
-            return Village::create([
-                'name' => $row[ColumnJNEEnums::KELURAHAN],
-                'zip' => $row[ColumnJNEEnums::KODE_POS],
-                'jne_subdistrict_id' => $district->id
-            ]);
+            if ($district) {
+                return Village::create([
+                    'name' => $row[ColumnJNEEnums::KELURAHAN],
+                    'zip' => $row[ColumnJNEEnums::KODE_POS],
+                    'jne_subdistrict_id' => $district->id
+                ]);
+            } else {
+                /** log error if any */
+                echo $row[ColumnJNEEnums::KECAMATAN] . ":" . $city->id;
+                exit();
+            }
+
         }
 
         return null;
